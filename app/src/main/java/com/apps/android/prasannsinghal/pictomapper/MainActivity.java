@@ -3,6 +3,8 @@ package com.apps.android.prasannsinghal.pictomapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.location.Location;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,6 +33,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+
+
     private Button button;
     private Button quitbutton;
     private Button settingsbutton;
@@ -40,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -167,6 +174,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 builder.show();
 
                 map.addMarker(new MarkerOptions().position(point));
+                float[] results = new float[1];
+                Location.distanceBetween(point.latitude, point.longitude,
+                        getlat(), getlng(), results);
+
             }
         });
 
