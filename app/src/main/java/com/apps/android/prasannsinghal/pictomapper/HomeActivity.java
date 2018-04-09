@@ -28,8 +28,8 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         protected MonumentModel doInBackground(Void... params) {
-
-            return WikiDataExtractionSvc.getMonumentSummary(null);
+            SearchResultModel s = new SearchResultModel();
+            return WikiDataExtractionSvc.getMonumentSummary(s);
         }
 
         protected void onPostExecute(final String descriptionJSON) {

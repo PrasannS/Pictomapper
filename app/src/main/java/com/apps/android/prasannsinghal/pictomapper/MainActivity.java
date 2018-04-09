@@ -2,14 +2,20 @@ package com.apps.android.prasannsinghal.pictomapper;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+
 
 import com.google.android.gms.maps.GoogleMap;
 
@@ -27,7 +33,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.squareup.picasso.Picasso;
 
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,6 +49,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button storebutton1;
     private Button storebutton2;
     private Button mapclear;
+    public HomeActivity home = new HomeActivity();
+    public HomeActivity.GetWikiURLsAsync urla = home.new GetWikiURLsAsync();
+    int turnnumbergen = (int)(Math.random()*urla.MonumentModels.size());
+    int turnumber = turnnumbergen;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +65,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SupportMapFragment mapFragment =
 
+                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+
+        mapFragment.getMapAsync(this);
+        ImageView imageView = (ImageView)findViewById(R.id.imag);
+        Picasso.with(this)
+                .load("https://onehdwallpaper.com/wp-content/uploads/2015/07/Taj-Mahal-Desktop-HD-Wallpapers.jpg")
+                .into(imageView);
 
         button = (Button)findViewById(R.id.homebuttonmain);
         button.setOnClickListener(new View.OnClickListener() {
@@ -110,11 +133,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        SupportMapFragment mapFragment =
 
-                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-
-        mapFragment.getMapAsync(this);
 
     }
 
@@ -126,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public void onMapReady(final GoogleMap map) {
+
 
         map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
@@ -203,13 +223,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Intent intent = new Intent(this,ShopActivity.class);
         startActivity(intent);
     }
-    public double getlat(){
-        return 27.17;
+    /*public double getlat(){
+        return urla.MonumentModels.get(turnumber).lat;
 
     }
     public double getlng(){
-        return 78.04;
-    }
+        return urla.MonumentModels.get(turnumber).lng;
+    }*/
 
+    public double getlat(){
+        return 0;
+
+    }
+    public double getlng(){
+        return 0;
+    }
 
 }
