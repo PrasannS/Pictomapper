@@ -2,6 +2,7 @@ package com.apps.android.prasannsinghal.pictomapper;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Button;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -293,28 +294,34 @@ public class HomeActivity extends AppCompatActivity {
                 "Antelope Canyon"};
 
         public ArrayList<SearchResultModel> searchResultModels = new ArrayList<>();
-        public ArrayList<MonumentModel> MonumentModels = new ArrayList<>();
+        //public ArrayList<MonumentModel> MonumentModels = new ArrayList<>();
+
 
         @Override
         protected ArrayList<SearchResultModel> doInBackground(Void... params) {
             for (String s: allMonuments
                  ) {
-               SearchResultModel srm = WikiSearchTermToFullUrlSvc.getSearchResultsSummary(s);
+                SearchResultModel srm = WikiSearchTermToFullUrlSvc.getSearchResultsSummary(s);
                 SearchResultModel srm2 = WikiSearchTermToFullUrlSvc.getURLPartFromPageId(srm);
-                searchResultModels.add(srm2);
+                if (srm2!=null && srm2.URLPart!=null && srm2.URLPart.trim().length()>0){
+                    searchResultModels.add(srm2);
+                    Log.d("MonumentModel",srm2.URLPart);
+                }
+
             }
-            Monumentlist();
+            //Monumentlist();
             return searchResultModels;
         }
+        //MonumentModel mm = WikiDataExtractionSvc.getMonumentSummary(searchResultModels.get(1));
 
-        protected ArrayList<MonumentModel> Monumentlist() {
+        /*protected ArrayList<MonumentModel> Monumentlist() {
             for (SearchResultModel s : searchResultModels
                     ) {
                 MonumentModel mm = WikiDataExtractionSvc.getMonumentSummary(s);
                 MonumentModels.add(mm);
             }
             return MonumentModels;
-        }
+        }*/
 
 
 

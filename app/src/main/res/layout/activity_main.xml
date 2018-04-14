@@ -24,11 +24,10 @@
 
 
             <Button
-                android:id="@+id/storebutton1"
+                android:id="@+id/scorebutton1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Score:"
                 android:gravity=""
                 android:background="@android:color/holo_orange_light"/>
 

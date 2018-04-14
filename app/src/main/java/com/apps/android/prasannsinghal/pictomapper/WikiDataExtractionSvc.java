@@ -117,7 +117,7 @@ public class WikiDataExtractionSvc {
 
 
         } catch (Exception e) {
-
+            Log.d("getMonumentSummary",e.getMessage());
         }
         finally {
 

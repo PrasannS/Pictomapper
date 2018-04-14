@@ -36,6 +36,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,10 +50,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button storebutton1;
     private Button storebutton2;
     private Button mapclear;
-    public HomeActivity home = new HomeActivity();
-    public HomeActivity.GetWikiURLsAsync urla = home.new GetWikiURLsAsync();
-    int turnnumbergen = (int)(Math.random()*urla.MonumentModels.size());
-    int turnumber = turnnumbergen;
+    //public HomeActivity home = new HomeActivity();
+    //public HomeActivity.GetWikiURLsAsync urla = home.new GetWikiURLsAsync();
+    //int turnnumbergen = (int)(Math.random()*urla.MonumentModels.size());
+    //int turnumber = turnnumbergen;
+    int score;
 
 
 
@@ -84,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
 
-        storebutton1 = (Button)findViewById(R.id.storebutton1);
+        storebutton1 = (Button)findViewById(R.id.scorebutton1);
         storebutton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -185,6 +187,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 List<PatternItem> pattern = Arrays.<PatternItem>asList(
                                         new Gap(5), new Dash(10), new Gap(5));
                                 line.setPattern(pattern);
+                                score +=(20010-Distance(new LatLng(getlat(),getlng()),point));
+                                storebutton1.setText("SCORE: "+score);
                             }
                         });
                         builder1.show();
@@ -237,6 +241,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
     public double getlng(){
         return 0;
+    }
+    public double Distance(LatLng StartP, LatLng EndP) {
+        int Radius=6371;//radius of earth in Km
+        double lat1 = StartP.latitude;
+        double lat2 = EndP.latitude;
+        double lon1 = StartP.longitude;
+        double lon2 = EndP.longitude;
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLon = Math.toRadians(lon2-lon1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLon/2) * Math.sin(dLon/2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double valueResult= Radius*c;
+        double km=valueResult/1;
+        DecimalFormat newFormat = new DecimalFormat("####");
+        int kmInDec =  Integer.valueOf(newFormat.format(km));
+        double meter=valueResult%1000;
+        int  meterInDec= Integer.valueOf(newFormat.format(meter));
+        Log.i("Radius Value",""+valueResult+"   KM  "+kmInDec+" Meter   "+meterInDec);
+
+        return Radius * c;
     }
 
 }
