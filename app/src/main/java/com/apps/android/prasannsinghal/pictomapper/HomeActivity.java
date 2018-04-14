@@ -25,22 +25,7 @@ public class HomeActivity extends AppCompatActivity {
     protected Context context = null; //getApplicationContext();
 
 
-    public class GetWikiDataAsync extends AsyncTask<Void, Void, MonumentModel> {
-
-        @Override
-        protected MonumentModel doInBackground(Void... params) {
-            SearchResultModel s = new SearchResultModel();
-            return WikiDataExtractionSvc.getMonumentSummary(s);
-        }
-
-        protected void onPostExecute(final String descriptionJSON) {
-            int duration = Toast.LENGTH_LONG;
-            Toast toast = Toast.makeText(context, descriptionJSON, duration);
-            toast.show();
-        }
-    }
-
-    public class GetWikiURLsAsync extends AsyncTask<Void, Void, ArrayList<SearchResultModel>> {
+    public class GetWikiURLsAsync extends AsyncTask<Void, Void, ArrayList<MonumentModel>> {
 
         public String[] allMonuments = {"Great Wall of China",
                 "Statue of Liberty",
@@ -293,43 +278,38 @@ public class HomeActivity extends AppCompatActivity {
                 "Halong Bay",
                 "Antelope Canyon"};
 
-        public ArrayList<SearchResultModel> searchResultModels = new ArrayList<>();
+        public ArrayList<MonumentModel> monumentModelModels = new ArrayList<>();
         //public ArrayList<MonumentModel> MonumentModels = new ArrayList<>();
 
 
+
         @Override
-        protected ArrayList<SearchResultModel> doInBackground(Void... params) {
+        protected ArrayList<MonumentModel> doInBackground(Void... params) {
             for (String s: allMonuments
                  ) {
                 SearchResultModel srm = WikiSearchTermToFullUrlSvc.getSearchResultsSummary(s);
                 SearchResultModel srm2 = WikiSearchTermToFullUrlSvc.getURLPartFromPageId(srm);
                 if (srm2!=null && srm2.URLPart!=null && srm2.URLPart.trim().length()>0){
-                    searchResultModels.add(srm2);
-                    Log.d("MonumentModel",srm2.URLPart);
+                    MonumentModel m = WikiSearchTermToFullUrlSvc.getMonumentSummary(srm2);
+                    monumentModelModels.add(m);
+                    //Log.d("MonumentModel",srm2.URLPart);
                 }
 
             }
             //Monumentlist();
-            return searchResultModels;
+            return monumentModelModels;
         }
-        //MonumentModel mm = WikiDataExtractionSvc.getMonumentSummary(searchResultModels.get(1));
-
-        /*protected ArrayList<MonumentModel> Monumentlist() {
-            for (SearchResultModel s : searchResultModels
-                    ) {
-                MonumentModel mm = WikiDataExtractionSvc.getMonumentSummary(s);
-                MonumentModels.add(mm);
-            }
-            return MonumentModels;
-        }*/
-
-
 
         @Override
-        protected void onPostExecute(final ArrayList<SearchResultModel> srms) {
+        protected void onPostExecute(final ArrayList<MonumentModel> mms) {
             int duration = Toast.LENGTH_LONG;
-            Toast toast = Toast.makeText(context, "Done", duration);
-            toast.show();
+            //Toast toast = Toast.makeText(context, "Done", duration);
+            //toast.show();
+            for (MonumentModel s: mms
+                    ){
+                String  outputCSVLine = "%#%"+s.name+"%#%"+s.description+"%#%"+s.lat+"%#%"+s.lng+"%#%"+s.imageURL+"%#%"+s.detailedDescription;
+                Log.d("Monuments",outputCSVLine);
+            }
         }
     }
 
@@ -377,7 +357,7 @@ public class HomeActivity extends AppCompatActivity {
     public void openSettingActivity(){
         //Intent intent1 = new Intent(this,SettingActivity.class);
         //startActivity(intent1);
-        new GetWikiDataAsync().execute();
+        //new GetWikiURLsAsync().execute();
     }
 
 

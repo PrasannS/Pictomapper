@@ -37,6 +37,8 @@ public class WikiSearchTermToFullUrlSvc {
             URL url = new URL(urlName);
             HttpsURLConnection httpsConnection = (HttpsURLConnection) url.openConnection();
             httpsConnection.setConnectTimeout(5000);
+            httpsConnection.setRequestProperty("Content-Type", "application/json");
+            httpsConnection.setRequestProperty("Accept", "application/json");
             //httpsConnection.setRequestProperty("IPSWSTicket", b1);
             //httpsConnection.addRequestProperty("IPSUserName", b3);
 
@@ -98,11 +100,11 @@ public class WikiSearchTermToFullUrlSvc {
     public static SearchResultModel getSearchResultsSummary(String term){
 
 
-        SearchResultModel m = null;
+        SearchResultModel m = new SearchResultModel();
 
         try {
             String query = URLEncoder.encode(term, "utf-8");
-            String url01 = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch="+query+"&utf8=";
+            String url01 = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch="+query+"&format=json&utf8=";
             URL url = null;
             String jSONResponse ="";
 
@@ -133,10 +135,10 @@ public class WikiSearchTermToFullUrlSvc {
 
 
         } catch (Exception e) {
-
+            Log.d("getSearchResultsSummary",e.getMessage());
         }
         finally {
-
+            Log.d("getSearchResultsSummary","In finally..");
         }
 
         return m;
@@ -146,12 +148,14 @@ public class WikiSearchTermToFullUrlSvc {
 
 
         SearchResultModel m = new SearchResultModel();
-        m.pageId = srm.pageId;
-        m.snippet = srm.snippet;
+
 
         try {
 
-            String url01 = "https://en.wikipedia.org/w/api.php?action=query&prop=info&pageids="+srm.pageId+"&inprop=url";
+            m.pageId = srm.pageId;
+            m.snippet = srm.snippet;
+
+            String url01 = "https://en.wikipedia.org/w/api.php?action=query&prop=info&pageids="+srm.pageId+"&format=json&inprop=url";
             URL url = null;
             String jSONResponse ="";
 
@@ -177,7 +181,40 @@ public class WikiSearchTermToFullUrlSvc {
 
 
         } catch (Exception e) {
+            Log.d("getURLPartFromPageId",e.getMessage());
+        }
+        finally {
 
+        }
+
+        return m;
+    }
+
+    public static MonumentModel getMonumentSummary(SearchResultModel srm){
+
+        String url01 = "https://en.wikipedia.org/api/rest_v1/page/summary"+srm.URLPart;
+        URL url = null;
+        String jSONResponse ="";
+        MonumentModel m = null;
+
+        try {
+            url = new URL(url01);
+
+            Long now_before = System.currentTimeMillis();
+            Log.d("getMonumentSummary", now_before.toString());
+            String s2 = getHttpsContent(url01);
+
+            Long now_after = System.currentTimeMillis();
+            Log.d("getMonumentSummary", now_after.toString());
+
+            jSONResponse = s2;
+            if (jSONResponse!=null && jSONResponse.length()>0){
+                m = new MonumentModel(jSONResponse);
+            }
+
+
+        } catch (Exception e) {
+            Log.d("getMonumentSummary",e.getMessage());
         }
         finally {
 

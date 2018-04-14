@@ -39,6 +39,7 @@ import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -57,7 +58,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     int score;
 
 
-
+    MonumentModel[] ALL_MON_MODELS;
+    int currentIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ALL_MON_MODELS = MonumentModel.fromCSV(MONUMENTS.ALL_MONUMENTS);
+        onPlayBegin();
+
         SupportMapFragment mapFragment =
 
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -74,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
         ImageView imageView = (ImageView)findViewById(R.id.imag);
         Picasso.with(this)
-                .load("https://onehdwallpaper.com/wp-content/uploads/2015/07/Taj-Mahal-Desktop-HD-Wallpapers.jpg")
+                .load(ALL_MON_MODELS[currentIndex].imageURL)
                 .into(imageView);
 
         button = (Button)findViewById(R.id.homebuttonmain);
@@ -236,11 +241,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }*/
 
     public double getlat(){
-        return 0;
+        return ALL_MON_MODELS[currentIndex].lat;
 
     }
     public double getlng(){
-        return 0;
+
+        return ALL_MON_MODELS[currentIndex].lng;
+    }
+
+    public void onPlayBegin(){
+        Random r = new Random();
+        currentIndex = r.nextInt(ALL_MON_MODELS.length);
     }
     public double Distance(LatLng StartP, LatLng EndP) {
         int Radius=6371;//radius of earth in Km
