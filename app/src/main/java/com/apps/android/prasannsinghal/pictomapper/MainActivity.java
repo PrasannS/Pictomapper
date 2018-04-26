@@ -12,9 +12,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 
 import com.google.android.gms.maps.GoogleMap;
@@ -51,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button storebutton1;
     private Button storebutton2;
     private Button mapclear;
+    private Button hintbutton;
     //public HomeActivity home = new HomeActivity();
     //public HomeActivity.GetWikiURLsAsync urla = home.new GetWikiURLsAsync();
     //int turnnumbergen = (int)(Math.random()*urla.MonumentModels.size());
@@ -58,8 +62,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     int score;
 
 
+
     MonumentModel[] ALL_MON_MODELS;
     int currentIndex = 0;
+    int hintclicks = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +93,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 openHomeActivity();
+            }
+        });
+
+        hintbutton = (Button)findViewById(R.id.button2);
+        hintbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onHint();
             }
         });
 
@@ -194,6 +208,32 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 line.setPattern(pattern);
                                 score +=(20010-Distance(new LatLng(getlat(),getlng()),point));
                                 storebutton1.setText("SCORE: "+score);
+                                rellayout().setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+                                        builder1.setCancelable(true);
+                                        builder1.setTitle("Good Guess");
+                                        builder1.setMessage("You were "+Distance(new LatLng(getlat(),getlng()),point)+" km away!\nHere's some info: \n"+ALL_MON_MODELS[currentIndex].detailedDescription);
+                                        builder1.setNegativeButton("BACK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dialogInterface.cancel();
+                                            }
+                                        });
+                                        builder1.setPositiveButton("NEXT", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                Intent intent = getIntent();
+                                                finish();
+                                                startActivity(intent);
+                                            }
+                                        });
+                                        builder1.show();
+                                    }
+                                });
+
+
                             }
                         });
                         builder1.show();
@@ -249,9 +289,48 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return ALL_MON_MODELS[currentIndex].lng;
     }
 
+    public LinearLayout rellayout(){
+        LinearLayout rel = findViewById(R.id.mainlay);
+        return rel;
+    }
+
     public void onPlayBegin(){
         Random r = new Random();
         currentIndex = r.nextInt(ALL_MON_MODELS.length);
+    }
+
+    public void onHint(){
+        switch(hintclicks){
+            case 0:{
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+                builder1.setCancelable(true);
+                builder1.setTitle("HINT "+(hintclicks+1));
+                builder1.setMessage("The name of this place is "+ALL_MON_MODELS[currentIndex].name);
+                builder1.setNegativeButton("BACK TO QUESTION", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+                builder1.show();
+                break;
+            }
+            default:{
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+                builder1.setCancelable(true);
+                builder1.setTitle("SORRY ");
+                builder1.setMessage("YOU have used up all your hints");
+                builder1.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+                builder1.show();
+                break;
+            }
+        }
+        hintclicks++;
     }
     public double Distance(LatLng StartP, LatLng EndP) {
         int Radius=6371;//radius of earth in Km

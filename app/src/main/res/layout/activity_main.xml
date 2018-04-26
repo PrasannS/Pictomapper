@@ -5,7 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.apps.android.prasannsinghal.pictomapper.MainActivity"
-        >
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,6 +16,7 @@
         android:orientation="vertical"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp"
+        android:id="@+id/mainlay"
         android:background="@android:color/holo_orange_light"
         android:gravity="center">
 
@@ -107,3 +111,4 @@
 
     </LinearLayout>
 </RelativeLayout>
+
