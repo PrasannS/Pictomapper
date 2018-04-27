@@ -9,22 +9,26 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     >
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp"
-        android:id="@+id/mainlay"
-        android:background="@android:color/holo_orange_light"
-        android:gravity="center">
+        android:gravity="fill">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:orientation="horizontal"
-            android:gravity="center">
+            android:gravity="top">
 
 
             <Button
@@ -32,8 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity=""
-                android:background="@android:color/holo_orange_light"/>
+                android:gravity="" />
 
             <Button
                 android:id="@+id/storebutton2"
@@ -41,8 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="lvl:"
-                android:gravity=""
-                android:background="@android:color/holo_orange_light"/>
+                android:gravity="" />
 
             <Button
                 android:id="@+id/homebuttonmain"
@@ -53,29 +55,28 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/imag"
-            android:layout_width="match_parent"
-            android:layout_height="220dp"
-            android:src="@drawable/tajmahal"
-            />
+        <LinearLayout
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:id="@+id/mainlay">
+            <ImageView
+                android:id="@+id/imag"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:src="@drawable/tajmahal"
+                />
+        </LinearLayout>
 
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
+
+
 
 
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:gravity="center">
+            android:gravity="bottom">
 
 
             <Button
@@ -83,7 +84,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="hint" />
+                android:text="hint"
+                android:gravity="center"/>
 
             <Button
                 android:id="@+id/quitbutton"

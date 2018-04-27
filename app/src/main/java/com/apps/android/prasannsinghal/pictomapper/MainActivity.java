@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -66,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     MonumentModel[] ALL_MON_MODELS;
     int currentIndex = 0;
     int hintclicks = 0;
+    public boolean hintactivate1 = false;
+    public boolean hintactivate2 = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,14 +96,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 openHomeActivity();
-            }
-        });
-
-        hintbutton = (Button)findViewById(R.id.button2);
-        hintbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onHint();
             }
         });
 
@@ -258,6 +253,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        hintbutton = (Button)findViewById(R.id.button2);
+        hintbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onHint();
+                if(hintactivate1==true){
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(getlat(), getlng()),5));
+                }
+                if(hintactivate2==true){
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(getlat(), getlng()),10));
+                }
+            }
+        });
+
     }
 
     public void openHomeActivity(){
@@ -313,6 +322,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 });
                 builder1.show();
+                break;
+            }
+            case 1:{
+                hintactivate1 = true;
+                break;
+            }
+            case 2:{
+                hintactivate2 = true;
                 break;
             }
             default:{
