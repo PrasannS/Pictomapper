@@ -86,10 +86,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
-        ImageView imageView = (ImageView)findViewById(R.id.imag);
+        com.apps.android.prasannsinghal.pictomapper.TouchImageView  imageView = (com.apps.android.prasannsinghal.pictomapper.TouchImageView)findViewById(R.id.imag);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         Picasso.with(this)
                 .load(ALL_MON_MODELS[currentIndex].imageURL)
                 .into(imageView);
+
 
         button = (Button)findViewById(R.id.homebuttonmain);
         button.setOnClickListener(new View.OnClickListener() {
@@ -182,14 +184,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
                         builder1.setCancelable(true);
                         builder1.setTitle("What do you want to do?");
-                        builder1.setMessage("You can make another guess or finish, but beware, making an additional guess will average the results of your other guesses");
-                        builder1.setNegativeButton("Make another guess", new DialogInterface.OnClickListener() {
+                        builder1.setMessage("Are you sure that this is your final guess?");
+                        builder1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.cancel();
                             }
                         });
-                        builder1.setPositiveButton("Finish question", new DialogInterface.OnClickListener() {
+                        builder1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 map.addMarker(new MarkerOptions().position(new LatLng(getlat(), getlng())).title("Marker"));
@@ -201,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 List<PatternItem> pattern = Arrays.<PatternItem>asList(
                                         new Gap(5), new Dash(10), new Gap(5));
                                 line.setPattern(pattern);
+                                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng((point.latitude+getlat())/2, (point.longitude+getlng())/2),2));
                                 score +=(20010-Distance(new LatLng(getlat(),getlng()),point));
                                 storebutton1.setText("SCORE: "+score);
                                 rellayout().setOnClickListener(new View.OnClickListener() {
@@ -250,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 map.clear();
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0),0));
             }
         });
 
