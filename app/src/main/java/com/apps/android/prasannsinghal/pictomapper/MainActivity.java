@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -95,65 +96,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Picasso.with(this)
                 .load(ALL_MON_MODELS[currentIndex].imageURL)
                 .into(imageView);
-
-
-        button = (Button)findViewById(R.id.homebuttonmain);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openHomeActivity();
-            }
-        });
-
-
-        storebutton1 = (Button)findViewById(R.id.scorebutton1);
-        storebutton1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openStoreActivity();
-            }
-        });
-
-        storebutton2 = (Button)findViewById(R.id.storebutton2);
-        storebutton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openStoreActivity();
-            }
-        });
-
-        settingsbutton = (Button)findViewById(R.id.settingsbutton);
-        settingsbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openSettingsActivity();
-            }
-        });
-
-        quitbutton = (Button)findViewById(R.id.quitbutton);
-        quitbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setCancelable(true);
-                builder.setTitle("Are you sure?");
-                builder.setMessage("If you quit then your progress will be recorded and you will start fresh next time");
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        openHomeActivity();
-
-                    }
-                });
-                builder.show();
-            }
-        });
 
 
 
@@ -381,16 +323,42 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.mainactivitytoolbar, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 // User chose the "Settings" item, show the app settings UI...
+                openSettingsActivity();
                 return true;
 
             case R.id.action_favorite:
                 // User chose the "Favorite" action, mark the current item
-                // as a favorite...
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setCancelable(true);
+                builder.setTitle("Are you sure?");
+                builder.setMessage("If you quit then your progress will be recorded and you will start fresh next time");
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        openHomeActivity();
+
+                    }
+                });
+                builder.show();
                 return true;
+
 
             default:
                 // If we got here, the user's action was not recognized.

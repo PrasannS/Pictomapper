@@ -1,18 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.apps.android.prasannsinghal.pictomapper.MainActivity">
-    <!-- "Mark Favorite", should appear as action button if possible -->
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+tools:context="com.apps.android.prasannsinghal.pictomapper.MainActivity">
     <item
-        android:id="@+id/action_favorite"
-        android:icon="@drawable/tajmahal"
-        android:title="HI"
+        android:id="@+id/action_HINT"
+        android:icon="@drawable/images"
+        android:title="HINT"
         app:showAsAction="ifRoom"/>
 
-    <!-- Settings, should always be in the overflow -->
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
-        app:showAsAction="never"/>
-
+<item android:id="@+id/action_favorite"
+    android:title="HOME"
+    app:showAsAction="never"/>
+<item android:id="@+id/action_settings"
+    android:title="SETTINGS"
+    app:showAsAction="never"/>
 </menu>
