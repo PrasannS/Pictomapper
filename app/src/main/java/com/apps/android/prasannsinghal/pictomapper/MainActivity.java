@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -50,15 +51,8 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-
-
-    private Button button;
-    private Button quitbutton;
-    private Button settingsbutton;
-    private Button storebutton1;
-    private Button storebutton2;
-    private Button mapclear;
-    private Button hintbutton;
+    private ImageView mapclear;
+    private ImageView hintbutton;
     //public HomeActivity home = new HomeActivity();
     //public HomeActivity.GetWikiURLsAsync urla = home.new GetWikiURLsAsync();
     //int turnnumbergen = (int)(Math.random()*urla.MonumentModels.size());
@@ -151,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 line.setPattern(pattern);
                                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng((point.latitude+getlat())/2, (point.longitude+getlng())/2),2));
                                 score +=(20010-Distance(new LatLng(getlat(),getlng()),point));
-                                storebutton1.setText("SCORE: "+score);
                                 rellayout().setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -194,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        mapclear = (Button)findViewById(R.id.clearbutton);
+        mapclear = (ImageView) findViewById(R.id.clearbutton);
         mapclear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -203,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        hintbutton = (Button)findViewById(R.id.button2);
+        hintbutton = (ImageView) findViewById(R.id.button2);
         hintbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

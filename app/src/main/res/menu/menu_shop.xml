@@ -8,10 +8,4 @@
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
         app:showAsAction="never"/>
-    <item android:id="@+id/action_favorite"
-        android:title="FAVORITE"
-        app:showAsAction="never"/>
-    <item android:id="@+id/action_hi"
-        android:title="FAVORITE"
-        app:showAsAction="never"/>
 </menu>

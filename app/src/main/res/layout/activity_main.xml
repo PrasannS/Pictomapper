@@ -37,7 +37,6 @@
                 android:id="@+id/imag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/tajmahal"
                 />
         </LinearLayout>
 
@@ -58,16 +57,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-                <Button
+                <ImageView
+                    android:gravity="fill"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:icon="@drawable/redo"
-                    android:id="@+id/clearbutton"/>
-                <Button
+                    android:id="@+id/clearbutton"
+                    android:src="@drawable/redo"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"/>
+                <ImageView
                     android:id="@+id/button2"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:icon="@drawable/images" />
+                    android:src="@drawable/images"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"/>
             </LinearLayout>
 
 
