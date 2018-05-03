@@ -134,7 +134,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         builder1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                map.addMarker(new MarkerOptions().position(new LatLng(getlat(), getlng())).title("Marker"));
+                                MarkerOptions marker = new MarkerOptions().position(new LatLng(getlat(), getlat())).title("Hello Maps").icon(BitmapDescriptorFactory.fromResource(R.drawable.monu));
+                                map.addMarker(marker);
                                 Polyline line = map.addPolyline(new PolylineOptions()
                                         .add(new LatLng(getlat(), getlng()), new LatLng(point.latitude,point.longitude))
                                         .width(3)
@@ -179,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 });
                 builder.show();
 
-                map.addMarker(new MarkerOptions().position(point));
+                map.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.images)));
                 float[] results = new float[1];
                 Location.distanceBetween(point.latitude, point.longitude,
                         getlat(), getlng(), results);
