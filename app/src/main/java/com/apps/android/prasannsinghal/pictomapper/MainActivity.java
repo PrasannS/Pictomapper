@@ -1,5 +1,6 @@
 package com.apps.android.prasannsinghal.pictomapper;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,6 +16,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 
 import com.google.android.gms.maps.GoogleMap;
@@ -51,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button storebutton1;
     private Button storebutton2;
     private Button mapclear;
+    boolean playing = true;
     //public HomeActivity home = new HomeActivity();
     //public HomeActivity.GetWikiURLsAsync urla = home.new GetWikiURLsAsync();
     //int turnnumbergen = (int)(Math.random()*urla.MonumentModels.size());
@@ -78,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mapFragment.getMapAsync(this);
         ImageView imageView = (ImageView)findViewById(R.id.imag);
+
         Picasso.with(this)
                 .load(ALL_MON_MODELS[currentIndex].imageURL)
                 .into(imageView);
@@ -154,6 +159,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(final GoogleMap map) {
 
 
+
+
         map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(final LatLng point) {
@@ -194,6 +201,31 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 line.setPattern(pattern);
                                 score +=(20010-Distance(new LatLng(getlat(),getlng()),point));
                                 storebutton1.setText("SCORE: "+score);
+                                getRelLayout().setOnClickListener(new View.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(View v) {
+                                        AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+                                        builder1.setCancelable(true);
+                                        builder1.setTitle(ALL_MON_MODELS[currentIndex].name);
+                                        builder1.setMessage("Well played, you were "+Distance(new LatLng(getlat(),getlng()),point)+" km away from the location, here's some fun facts on this location:\n"+ALL_MON_MODELS[currentIndex].detailedDescription);
+                                        builder1.setNegativeButton("Back", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dialogInterface.cancel();
+                                            }
+                                        });
+                                        builder1.setPositiveButton("Next Question", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                Intent intent = getIntent();
+                                                finish();
+                                                startActivity(intent);
+                                            }
+                                        });
+                                    }
+
+                                });
                             }
                         });
                         builder1.show();
@@ -249,6 +281,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return ALL_MON_MODELS[currentIndex].lng;
     }
 
+    public LinearLayout getRelLayout (){
+        LinearLayout rlayout = (LinearLayout) findViewById(R.id.mainview);
+        return rlayout;
+    }
+
     public void onPlayBegin(){
         Random r = new Random();
         currentIndex = r.nextInt(ALL_MON_MODELS.length);
@@ -274,6 +311,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.i("Radius Value",""+valueResult+"   KM  "+kmInDec+" Meter   "+meterInDec);
 
         return Radius * c;
+
     }
 
 }
