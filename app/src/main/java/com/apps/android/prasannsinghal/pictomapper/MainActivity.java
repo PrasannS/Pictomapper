@@ -42,6 +42,8 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.squareup.picasso.Picasso;
 import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.InputStream;
 import java.text.DecimalFormat;
@@ -53,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private ImageView mapclear;
     private ImageView hintbutton;
+    private ImageView next;
+    private ImageView before;
+    private TextView instruct;
     //public HomeActivity home = new HomeActivity();
     //public HomeActivity.GetWikiURLsAsync urla = home.new GetWikiURLsAsync();
     //int turnnumbergen = (int)(Math.random()*urla.MonumentModels.size());
@@ -90,6 +95,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Picasso.with(this)
                 .load(ALL_MON_MODELS[currentIndex].imageURL)
                 .into(imageView);
+
+        instruct = (TextView) findViewById(R.id.instruct);
+        instruct.setText("Guess where the image is on the map");
+        next = (ImageView) findViewById(R.id.right);
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }
+        });
 
 
 
@@ -134,8 +151,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         builder1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                MarkerOptions marker = new MarkerOptions().position(new LatLng(getlat(), getlat())).title("Hello Maps").icon(BitmapDescriptorFactory.fromResource(R.drawable.monu));
-                                map.addMarker(marker);
+                                String msg = "Here's some info: \n"+ALL_MON_MODELS[currentIndex].detailedDescription;
+                                map.addMarker(new MarkerOptions().position(new LatLng(getlat(), getlng())).title(ALL_MON_MODELS[currentIndex].name).snippet(ALL_MON_MODELS[currentIndex].detailedDescription));
                                 Polyline line = map.addPolyline(new PolylineOptions()
                                         .add(new LatLng(getlat(), getlng()), new LatLng(point.latitude,point.longitude))
                                         .width(3)
@@ -146,7 +163,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 line.setPattern(pattern);
                                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng((point.latitude+getlat())/2, (point.longitude+getlng())/2),2));
                                 score +=(20010-Distance(new LatLng(getlat(),getlng()),point));
-                                rellayout().setOnClickListener(new View.OnClickListener() {
+                                Toast.makeText(getApplicationContext(),msg,5*Toast.LENGTH_LONG).show();
+                                /*rellayout().setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
                                         AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
@@ -169,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         });
                                         builder1.show();
                                     }
-                                });
+                                });*/
 
 
                             }
@@ -180,7 +198,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 });
                 builder.show();
 
-                map.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.fromResource(R.drawable.images)));
+
+                instruct.setText("Great Job! You were "+(int)Distance(new LatLng(getlat(),getlng()),point)+" Km away!");
+                map.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                 float[] results = new float[1];
                 Location.distanceBetween(point.latitude, point.longitude,
                         getlat(), getlng(), results);
@@ -192,7 +212,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapclear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                map.clear();
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0),0));
             }
         });
@@ -202,10 +221,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 onHint();
-                if(hintactivate1==true){
+                if(hintactivate1){
                     map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(getlat(), getlng()),5));
                 }
-                if(hintactivate2==true){
+                if(hintactivate2){
                     map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(getlat(), getlng()),10));
                 }
             }
