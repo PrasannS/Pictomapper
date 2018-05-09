@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "395292604617",
+    "firebase_url": "https://piktomapper-1.firebaseio.com",
+    "project_id": "piktomapper-1",
+    "storage_bucket": "piktomapper-1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:395292604617:android:27cf264ecd3ce30c",
+        "android_client_info": {
+          "package_name": "com.apps.android.prasannsinghal.pictomapper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "395292604617-j9mlql0p5dmc261neu8cgpskhlitv9kp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmJT2Ovwe_yoefH6Uwam66qQkrnK8pa40"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -2,9 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.apps.android.prasannsinghal.pictomapper.ShopActivity">
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
+    <!-- "Mark Favorite", should appear as action button if possible -->
+
+    <!-- Settings, should always be in the overflow -->
+    <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
-        app:showAsAction="never" />
+        app:showAsAction="never"/>
 </menu>
