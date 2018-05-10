@@ -51,6 +51,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import static com.apps.android.prasannsinghal.pictomapper.MONUMENTS.ind;
+
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private ImageView mapclear;
@@ -71,6 +73,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     int hintclicks = 0;
     public boolean hintactivate1 = false;
     public boolean hintactivate2 = false;
+    public boolean playb = MONUMENTS.pb;
+    public boolean played = false;
+    public LatLng poin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,14 +95,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
+        instruct = (TextView) findViewById(R.id.instruct);
         com.apps.android.prasannsinghal.pictomapper.TouchImageView  imageView = (com.apps.android.prasannsinghal.pictomapper.TouchImageView)findViewById(R.id.imag);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         Picasso.with(this)
                 .load(ALL_MON_MODELS[currentIndex].imageURL)
                 .into(imageView);
-
-        instruct = (TextView) findViewById(R.id.instruct);
-        instruct.setText("Guess where the image is on the map");
+        if(playb){
+            instruct.setText("Guess where the image is on the map");
+        }
         next = (ImageView) findViewById(R.id.right);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,11 +126,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public void onMapReady(final GoogleMap map) {
+        if(!playb){
+            String msg = "Here's some info: \n"+ALL_MON_MODELS[currentIndex].detailedDescription;
+            map.addMarker(new MarkerOptions().position(new LatLng(getlat(), getlng())).title(ALL_MON_MODELS[currentIndex].name).snippet(ALL_MON_MODELS[currentIndex].detailedDescription));
+            Polyline line = map.addPolyline(new PolylineOptions()
+                    .add(new LatLng(getlat(), getlng()), new LatLng(poin.latitude,poin.longitude))
+                    .width(3)
+                    .color(Color.BLACK));
+
+            List<PatternItem> pattern = Arrays.<PatternItem>asList(
+                    new Gap(5), new Dash(10), new Gap(5));
+            line.setPattern(pattern);
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng((poin.latitude+getlat())/2, (poin.longitude+getlng())/2),2));
+            score +=(20010-Distance(new LatLng(getlat(),getlng()),poin));
+            Toast.makeText(getApplicationContext(),msg,5*Toast.LENGTH_LONG).show();
+            instruct.setText("Great Job! You were "+(int)Distance(new LatLng(getlat(),getlng()),poin)+" Km away!");
+            map.addMarker(new MarkerOptions().position(poin).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+            float[] results = new float[1];
+            Location.distanceBetween(poin.latitude, poin.longitude,
+                    getlat(), getlng(), results);
+        }
+
 
 
         map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(final LatLng point) {
+                poin = point;
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setCancelable(true);
                 builder.setTitle("Is this your guess?");
@@ -151,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         builder1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                                played = true;
                                 String msg = "Here's some info: \n"+ALL_MON_MODELS[currentIndex].detailedDescription;
                                 map.addMarker(new MarkerOptions().position(new LatLng(getlat(), getlng())).title(ALL_MON_MODELS[currentIndex].name).snippet(ALL_MON_MODELS[currentIndex].detailedDescription));
                                 Polyline line = map.addPolyline(new PolylineOptions()
@@ -164,30 +193,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng((point.latitude+getlat())/2, (point.longitude+getlng())/2),2));
                                 score +=(20010-Distance(new LatLng(getlat(),getlng()),point));
                                 Toast.makeText(getApplicationContext(),msg,5*Toast.LENGTH_LONG).show();
-                                /*rellayout().setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
-                                        builder1.setCancelable(true);
-                                        builder1.setTitle("Good Guess");
-                                        builder1.setMessage("You were "+Distance(new LatLng(getlat(),getlng()),point)+" km away!\nHere's some info: \n"+ALL_MON_MODELS[currentIndex].detailedDescription);
-                                        builder1.setNegativeButton("BACK", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                dialogInterface.cancel();
-                                            }
-                                        });
-                                        builder1.setPositiveButton("NEXT", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                Intent intent = getIntent();
-                                                finish();
-                                                startActivity(intent);
-                                            }
-                                        });
-                                        builder1.show();
-                                    }
-                                });*/
 
 
                             }
@@ -207,6 +212,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
+
+
 
         mapclear = (ImageView) findViewById(R.id.clearbutton);
         mapclear.setOnClickListener(new View.OnClickListener() {
@@ -267,8 +274,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void onPlayBegin(){
-        Random r = new Random();
-        currentIndex = r.nextInt(ALL_MON_MODELS.length);
+         if(playb){
+             Random r = new Random();
+             currentIndex = r.nextInt(ALL_MON_MODELS.length);
+         }
+         else{
+             if(MONUMENTS.record.size()>1){
+                 currentIndex = MONUMENTS.record.get(ind);
+                 ind++;
+             }
+         }
+
     }
 
     public void onHint(){
