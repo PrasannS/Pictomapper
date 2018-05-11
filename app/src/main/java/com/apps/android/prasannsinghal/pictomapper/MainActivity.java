@@ -205,7 +205,7 @@ public class MainActivity extends MONUMENTS implements OnMapReadyCallback{
                                 List<PatternItem> pattern = Arrays.<PatternItem>asList(
                                         new Gap(5), new Dash(10), new Gap(5));
                                 line.setPattern(pattern);
-                                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng((point.latitude+getlat())/2, (point.longitude+getlng())/2),2));
+                                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng((point.latitude+getlat())/2, (point.longitude+getlng())/2),distancetozoom((int)Distance(new LatLng(getlat(),getlng()),poin))));
                                 score +=(20010-Distance(new LatLng(getlat(),getlng()),point));
                                 Toast.makeText(getApplicationContext(),msg,5*Toast.LENGTH_LONG).show();
 
@@ -301,6 +301,45 @@ public class MainActivity extends MONUMENTS implements OnMapReadyCallback{
              }
          }
 
+    }
+
+    public int distancetozoom(int d){
+        int val = 0;
+        if(d>6000)
+            val=1;
+        else{
+            if (d>5000)
+                val = 2;
+            else{
+                if(d>4000)
+                    val = 3;
+                else{
+                    if(d>3000)
+                        val = 5;
+                    else{
+                        if(d>2000)
+                            val = 6;
+                        else{
+                            if(d>550)
+                                val = 7;
+                            else{
+                                if(d>250)
+                                    val = 8;
+                                else{
+                                    if(d>100)
+                                        val = 9;
+                                    else{
+                                        if(d>0)
+                                            val = 10;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return val;
     }
 
     public void onHint(){
