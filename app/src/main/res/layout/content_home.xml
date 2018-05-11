@@ -8,6 +8,11 @@
     tools:context="com.apps.android.prasannsinghal.pictomapper.HomeActivity"
     tools:showIn="@layout/content_home">
 
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:layout_width="344dp"
         android:layout_height="543dp"

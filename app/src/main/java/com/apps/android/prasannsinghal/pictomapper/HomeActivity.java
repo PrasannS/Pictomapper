@@ -1,6 +1,7 @@
 package com.apps.android.prasannsinghal.pictomapper;
 import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Button;
@@ -12,6 +13,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -21,6 +29,7 @@ public class HomeActivity extends AppCompatActivity {
     private Button playbutton;
     private Button shopbutton;
     private Button settingsbutton;
+    private GoogleSignInClient m;
 
     protected Context context = null; //getApplicationContext();
 
@@ -316,7 +325,25 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Configure sign-in to request the user's ID, email address, and basic
+// profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        // Build a GoogleSignInClient with the options specified by gso.
+        m = GoogleSignIn.getClient(this, gso);
         setContentView(R.layout.content_home);
+        // Check for existing Google Sign In account, if the user is already signed in
+// the GoogleSignInAccount will be non-null.
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        updateUI(account);
+
+        findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signIn();
+            }
+        });
 
         playbutton = (Button)findViewById(R.id.playbutton);
         playbutton.setOnClickListener(new View.OnClickListener() {
@@ -343,6 +370,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         context = getApplicationContext();
+
     }
 
     public void openHomeActivity(){
@@ -355,9 +383,43 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent1);
     }
     public void openSettingActivity(){
-        //Intent intent1 = new Intent(this,SettingActivity.class);
-        //startActivity(intent1);
-        //new GetWikiURLsAsync().execute();
+        Intent intent1 = new Intent(this,SettingActivity.class);
+        startActivity(intent1);
+    }
+    public void updateUI(GoogleSignInAccount a){
+        if(a!=null){
+            openHomeActivity();
+        }
+    }
+    private void signIn() {
+        Intent signInIntent = m.getSignInIntent();
+        startActivityForResult(signInIntent, 12345);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        if (requestCode == 1) {
+            // The Task returned from this call is always completed, no need to attach
+            // a listener.
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+        }
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
+            // Signed in successfully, show authenticated UI.
+            updateUI(account);
+        } catch (ApiException e) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Log.w("problem", "signInResult:failed code=" + e.getStatusCode());
+            updateUI(null);
+        }
     }
 
 

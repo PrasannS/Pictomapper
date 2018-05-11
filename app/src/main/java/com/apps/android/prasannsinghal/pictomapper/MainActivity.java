@@ -52,12 +52,14 @@ import java.util.List;
 import java.util.Random;
 
 import static com.apps.android.prasannsinghal.pictomapper.MONUMENTS.ind;
+import static com.apps.android.prasannsinghal.pictomapper.MONUMENTS.record;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends MONUMENTS implements OnMapReadyCallback{
 
     private ImageView mapclear;
     private ImageView hintbutton;
     private ImageView next;
+    private ImageView left;
     private ImageView before;
     private TextView instruct;
     //public HomeActivity home = new HomeActivity();
@@ -104,10 +106,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(playb){
             instruct.setText("Guess where the image is on the map");
         }
+        else{
+            changepb(true);
+        }
         next = (ImageView) findViewById(R.id.right);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }
+        });
+        left = (ImageView) findViewById(R.id.left);
+        left.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changepb(false);
                 Intent intent = getIntent();
                 finish();
                 startActivity(intent);
@@ -277,11 +292,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
          if(playb){
              Random r = new Random();
              currentIndex = r.nextInt(ALL_MON_MODELS.length);
+             addrecord(currentIndex);
+             indadd();
          }
          else{
-             if(MONUMENTS.record.size()>1){
-                 currentIndex = MONUMENTS.record.get(ind);
-                 ind++;
+             if(MONUMENTS.record.size()>1 && ind>1){
+                 currentIndex = record.get(ind);
              }
          }
 
