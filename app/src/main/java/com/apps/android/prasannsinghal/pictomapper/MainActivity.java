@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 
@@ -31,11 +32,15 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.Dash;
 import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
 
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
@@ -196,7 +201,8 @@ public class MainActivity extends MONUMENTS implements OnMapReadyCallback{
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 played = true;
                                 String msg = "Here's some info: \n"+ALL_MON_MODELS[currentIndex].detailedDescription;
-                                map.addMarker(new MarkerOptions().position(new LatLng(getlat(), getlng())).title(ALL_MON_MODELS[currentIndex].name).snippet(ALL_MON_MODELS[currentIndex].detailedDescription));
+                                Marker m = map.addMarker(new MarkerOptions().position(new LatLng(getlat(), getlng())).title(ALL_MON_MODELS[currentIndex].name).snippet(ALL_MON_MODELS[currentIndex].detailedDescription));
+                                Marker g = map.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                                 Polyline line = map.addPolyline(new PolylineOptions()
                                         .add(new LatLng(getlat(), getlng()), new LatLng(point.latitude,point.longitude))
                                         .width(3)
@@ -205,7 +211,13 @@ public class MainActivity extends MONUMENTS implements OnMapReadyCallback{
                                 List<PatternItem> pattern = Arrays.<PatternItem>asList(
                                         new Gap(5), new Dash(10), new Gap(5));
                                 line.setPattern(pattern);
-                                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng((point.latitude+getlat())/2, (point.longitude+getlng())/2),distancetozoom((int)Distance(new LatLng(getlat(),getlng()),poin))));
+                                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                                    builder.include(m.getPosition());
+                                    builder.include(g.getPosition());
+                                LatLngBounds bounds = builder.build();
+                                int padding = 75; // offset from edges of the map in pixels
+                                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+                                map.animateCamera(cu);
                                 score +=(20010-Distance(new LatLng(getlat(),getlng()),point));
                                 Toast.makeText(getApplicationContext(),msg,5*Toast.LENGTH_LONG).show();
 
@@ -220,7 +232,6 @@ public class MainActivity extends MONUMENTS implements OnMapReadyCallback{
 
 
                 instruct.setText("Great Job! You were "+(int)Distance(new LatLng(getlat(),getlng()),point)+" Km away!");
-                map.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                 float[] results = new float[1];
                 Location.distanceBetween(point.latitude, point.longitude,
                         getlat(), getlng(), results);
@@ -303,45 +314,6 @@ public class MainActivity extends MONUMENTS implements OnMapReadyCallback{
 
     }
 
-    public int distancetozoom(int d){
-        int val = 0;
-        if(d>6000)
-            val=1;
-        else{
-            if (d>5000)
-                val = 2;
-            else{
-                if(d>4000)
-                    val = 3;
-                else{
-                    if(d>3000)
-                        val = 5;
-                    else{
-                        if(d>2000)
-                            val = 6;
-                        else{
-                            if(d>550)
-                                val = 7;
-                            else{
-                                if(d>250)
-                                    val = 8;
-                                else{
-                                    if(d>100)
-                                        val = 9;
-                                    else{
-                                        if(d>0)
-                                            val = 10;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return val;
-    }
-
     public void onHint(){
         switch(hintclicks){
             case 0:{
@@ -382,6 +354,15 @@ public class MainActivity extends MONUMENTS implements OnMapReadyCallback{
             }
         }
         hintclicks++;
+    }
+    public int getZoomLevel(Circle circle) {
+        int zoomLevel = 0;
+        if (circle != null){
+            double radius = circle.getRadius();
+            double scale = radius / 500;
+            zoomLevel =(int) (16 - Math.log(scale) / Math.log(2));
+        }
+        return zoomLevel;
     }
     public double Distance(LatLng StartP, LatLng EndP) {
         int Radius=6371;//radius of earth in Km
