@@ -227,20 +227,4 @@ public class MONUMENTS extends AppCompatActivity{
             "Gullfoss%#%waterfall%#%64.32611111%#%-20.12111111%#%https://upload.wikimedia.org/wikipedia/commons/1/1e/Gullfoss%2C_an_iconic_waterfall_of_Iceland.jpg%#%Gullfoss is a waterfall located in the canyon of Hvítá river in southwest Iceland.",
             "Hạ Long Bay%#%bay%#%20.9%#%107.2%#%https://upload.wikimedia.org/wikipedia/commons/e/e4/Halong_ensemble_%28colour_corrected%29.jpg%#%Ha Long Bay is a UNESCO World Heritage Site and popular travel destination in Quang Ninh Province, Vietnam. Administratively, the bay belongs to Ha Long City, Cam Pha town, and is a part of Van Don District. The bay features thousands of limestone karsts and isles in various shapes and sizes. Ha Long Bay is a center of a larger zone which includes Bai Tu Long Bay to the northeast, and Cat Ba Island to the southwest. These larger zones share a similar geological, geographical, geomorphological, climate, and cultural characters.",
             "Antelope Canyon%#%landform%#%36.9527664%#%-111.4412683%#%https://upload.wikimedia.org/wikipedia/commons/b/b5/USA_Antelope-Canyon.jpg%#%Antelope Canyon is a slot canyon in the American Southwest. It is on Navajo land east of Page, Arizona. Antelope Canyon includes two separate, scenic slot canyon sections, referred to individually as \"Upper Antelope Canyon\" or \"The Crack\"; and \"Lower Antelope Canyon\" or \"The Corkscrew\"."};
-
-    public static ArrayList<Integer> record = new ArrayList<>();
-    public static boolean pb = true;
-    public static int ind = 0;
-
-    public void indadd(){
-        ind++;
-    }
-
-    public void changepb(boolean b){
-        pb = b;
-    }
-
-    public void addrecord (int a){
-        record.add(a);
-    }
 }
