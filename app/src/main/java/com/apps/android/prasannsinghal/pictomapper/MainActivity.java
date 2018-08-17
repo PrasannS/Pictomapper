@@ -279,45 +279,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return rel;
     }
 
-    public int distancetozoom(int d){
-        int val = 0;
-        if(d>6000)
-            val=1;
-        else{
-            if (d>5000)
-                val = 2;
-            else{
-                if(d>4000)
-                    val = 3;
-                else{
-                    if(d>3000)
-                        val = 5;
-                    else{
-                        if(d>2000)
-                            val = 6;
-                        else{
-                            if(d>550)
-                                val = 7;
-                            else{
-                                if(d>250)
-                                    val = 8;
-                                else{
-                                    if(d>100)
-                                        val = 9;
-                                    else{
-                                        if(d>0)
-                                            val = 10;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return val;
-    }
-
     public void onHint(){
         switch(hintclicks){
             case 0:{
