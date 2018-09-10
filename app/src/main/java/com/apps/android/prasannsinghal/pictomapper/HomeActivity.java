@@ -34,7 +34,10 @@ public class HomeActivity extends AppCompatActivity {
     protected Context context = null; //getApplicationContext();
 
 
-    public class GetWikiURLsAsync extends AsyncTask<Void, Void, ArrayList<MonumentModel>> {
+    //Data Making Code is here, takes String Lists and returns data from wikipedia
+    //See referred files for more details
+
+    /*public class GetWikiURLsAsync extends AsyncTask<Void, Void, ArrayList<MonumentModel>> {
 
         public String[] allMonuments = {"Great Wall of China",
                 "Statue of Liberty",
@@ -287,7 +290,7 @@ public class HomeActivity extends AppCompatActivity {
                 "Halong Bay",
                 "Antelope Canyon"};
 
-        public ArrayList<MonumentModel> monumentModelModels = new ArrayList<>();
+        public ArrayList<MonumentMode> monumentModelModels = new ArrayList<>();
         //public ArrayList<MonumentModel> MonumentModels = new ArrayList<>();
 
 
@@ -320,7 +323,7 @@ public class HomeActivity extends AppCompatActivity {
                 Log.d("Monuments",outputCSVLine);
             }
         }
-    }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 
-public class PictomapperDBHelper {
+public class PictomapperDBHelper extends SQLiteOpenHelper{
     private static final String DATABASE_NAME = "DB_PICTOMAPPER";
     private static final int DATABASE_VERSION = 1;
     public static final String MONUMENTS_TABLE_NAME = "TBL_MONUMENTS";
@@ -16,17 +16,19 @@ public class PictomapperDBHelper {
 
     private static final String MONUMENTS_TABLE_CREATE =
             "CREATE TABLE " + MONUMENTS_TABLE_NAME + " (" +
-                    "MonumentID" + " TEXT primary key, " +
+                    "ID" + " TEXT primary key, " +
                     "Name" + " TEXT, " +
                     "Latitude" + " REAL, " +
                     "Longitude" + " REAL, " +
+                    "Description" + " TEXT, " +
+                    "DetailedDescription" + " TEXT, " +
                     "ImgURL" + " TEXT);";
 
     private static final String PLAYS_TABLE_CREATE =
             "CREATE TABLE " + PLAYS_TABLE_NAME + " (" +
                     "ID" + " TEXT primary key, " +
-                    "PlayID" + " TEXT, " +
                     "MonumentID" + " TEXT, " +
+                    "FOREIGN KEY(MonumentID) REFERENCES " + MONUMENTS_TABLE_NAME + "(ID)" +
                     "GuessLatitude" + " REAL, " +
                     "GuessLongitude" + " REAL, " +
                     "DateTimeStamp" + " REAL);";
@@ -34,9 +36,8 @@ public class PictomapperDBHelper {
     private static final String USERS_TABLE_CREATE =
             "CREATE TABLE " + USERS_TABLE_NAME + " (" +
                     "ID" + " TEXT primary key, " +
-                    "UserID" + " TEXT, " +
                     "UserName" + " TEXT, " +
-                    "SessionsPlayes" + " REAL, " +
+                    "SessionsPlayed" + " REAL, " +
                     "Age" + " REAL, " +
                     "DateTimeStamp" + " REAL);";
 
@@ -45,6 +46,8 @@ public class PictomapperDBHelper {
                     "ID" + " TEXT primary key, " +
                     "UserID" + " TEXT, " +
                     "PlayID" + " TEXT, " +
+                    "FOREIGN KEY(UserID) REFERENCES "+USERS_TABLE_NAME+"(ID)"+
+                    "FOREIGN KEY(PlayID) REFERENCES "+PLAYS_TABLE_NAME+"(ID)"+
                     "Score" + " REAL, " +
                     "DateTimeStamp" + " REAL);";
 
