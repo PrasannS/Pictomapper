@@ -1,6 +1,6 @@
 package com.apps.android.prasannsinghal.pictomapper.Models;
 
-import com.apps.android.prasannsinghal.pictomapper.MonumentModel;
+import com.apps.android.prasannsinghal.pictomapper.Models.Monument;
 import com.google.android.gms.maps.model.LatLng;
 
 public class Play {
@@ -40,7 +40,7 @@ public class Play {
         userGuessLatLng = new LatLng(0.,0.);
     }
 
-    public Play(MonumentModel m){
+    public Play(Monument m){
         monumentName = m.name;
         monumentDesc = m.description;
         monumentLatLng = new LatLng(m.lat,m.lng);

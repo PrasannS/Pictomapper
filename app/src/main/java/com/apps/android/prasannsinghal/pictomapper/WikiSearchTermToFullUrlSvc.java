@@ -2,6 +2,8 @@ package com.apps.android.prasannsinghal.pictomapper;
 
 import android.util.Log;
 
+import com.apps.android.prasannsinghal.pictomapper.Models.Monument;
+
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -190,12 +192,12 @@ public class WikiSearchTermToFullUrlSvc {
         return m;
     }
 
-    public static MonumentModel getMonumentSummary(SearchResultModel srm){
+    public static Monument getMonumentSummary(SearchResultModel srm){
 
         String url01 = "https://en.wikipedia.org/api/rest_v1/page/summary"+srm.URLPart;
         URL url = null;
         String jSONResponse ="";
-        MonumentModel m = null;
+        Monument m = null;
 
         try {
             url = new URL(url01);
@@ -209,7 +211,7 @@ public class WikiSearchTermToFullUrlSvc {
 
             jSONResponse = s2;
             if (jSONResponse!=null && jSONResponse.length()>0){
-                m = new MonumentModel(jSONResponse);
+                m = new Monument(jSONResponse);
             }
 
 

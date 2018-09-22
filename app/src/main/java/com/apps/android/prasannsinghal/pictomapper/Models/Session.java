@@ -1,6 +1,6 @@
 package com.apps.android.prasannsinghal.pictomapper.Models;
 
-import com.apps.android.prasannsinghal.pictomapper.MonumentModel;
+import com.apps.android.prasannsinghal.pictomapper.Models.Monument;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -15,7 +15,7 @@ public class Session {
     public Play getCurrentPlay(){
         if(plays.size()==0){
             Random r = new Random();
-            MonumentModel m = Helper.ALL_MONUMENTS[r.nextInt(Helper.ALL_MONUMENTS.length)];
+            Monument m = Helper.ALL_MONUMENTS_DB.get(r.nextInt(Helper.ALL_MONUMENTS_DB.size()));
             plays.add(new Play(m));
         }
         return plays.get(currentplay);
@@ -28,7 +28,7 @@ public class Session {
     public void nextPlay(){
         if(currentplay+1>=plays.size()+1) {
             Random r = new Random();
-            MonumentModel m = Helper.ALL_MONUMENTS[r.nextInt(Helper.ALL_MONUMENTS.length)];
+            Monument m = Helper.ALL_MONUMENTS_DB.get(r.nextInt(Helper.ALL_MONUMENTS_DB.size()));
             plays.add(new Play(m));
         }
         currentplay++;

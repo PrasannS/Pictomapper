@@ -26,9 +26,11 @@ import android.support.v4.app.FragmentManager;
 
 
 import com.apps.android.prasannsinghal.pictomapper.Models.Helper;
+import com.apps.android.prasannsinghal.pictomapper.Models.Monument;
 import com.apps.android.prasannsinghal.pictomapper.Models.Play;
 import com.apps.android.prasannsinghal.pictomapper.Models.Session;
 import com.apps.android.prasannsinghal.pictomapper.Utilities.Scoring;
+import com.apps.android.prasannsinghal.pictomapper.persistence.PictomapperDAO;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -57,9 +59,12 @@ import android.widget.Toast;
 
 import java.io.InputStream;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+
+import static com.apps.android.prasannsinghal.pictomapper.MONUMENTS.ALL_MONUMENTS;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback{
@@ -73,11 +78,35 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean hintactivate1;
     private boolean hintactivate2;
     private int hintclicks = 0;
+    private PictomapperDAO datasource=null;
 
     private com.apps.android.prasannsinghal.pictomapper.TouchImageView  monumentImage;
     private SupportMapFragment mapFrag;
 
     private Session userSession;
+
+    public void saveInDatabase(){
+        Monument[] monuments = Monument.fromCSV(ALL_MONUMENTS);
+        for(Monument m:monuments){
+            try{
+                this.datasource.addMonument(m);
+            }
+            catch (Exception ex){
+                Log.e("saveInDatabase",ex.getMessage());
+            }
+
+        }
+    }
+
+    public ArrayList<Monument> readAllMonuments(){
+       return datasource.getAllMonuments();
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        this.datasource.close();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +153,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        datasource = new PictomapperDAO(this.getApplicationContext());
+
+        datasource.open();
+
+        this.saveInDatabase();
+
+        /*for(Monument m: this.readAllMonuments()){
+            Log.d("MonumentsDebugID",m.toString());
+        }*/
+        Helper.ALL_MONUMENTS_DB = this.readAllMonuments();
 
 
         onNewPlay();
@@ -137,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Picasso.with(this)
                 .load(p.getMonumentImageURL())
                 .into(monumentImage);
+
 
         // Clear map
         mapclear = (ImageView) findViewById(R.id.clearbutton);
@@ -203,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 builder.include(monmark.getPosition());
                                 builder.include(guessmark.getPosition());
                                 LatLngBounds bounds = builder.build();
-                                int padding = 25; // offset from edges of the map in pixels
+                                int padding = 45; // offset from edges of the map in pixels
                                 CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
                                 map.animateCamera(cu);
 
@@ -328,6 +368,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         getMenuInflater().inflate(R.menu.mainactivitytoolbar, menu);
         return true;
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

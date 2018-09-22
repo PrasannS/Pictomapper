@@ -28,7 +28,7 @@ public class PictomapperDBHelper extends SQLiteOpenHelper{
             "CREATE TABLE " + PLAYS_TABLE_NAME + " (" +
                     "ID" + " TEXT primary key, " +
                     "MonumentID" + " TEXT, " +
-                    "FOREIGN KEY(MonumentID) REFERENCES " + MONUMENTS_TABLE_NAME + "(ID)" +
+                    //"FOREIGN KEY(MonumentID) REFERENCES " + MONUMENTS_TABLE_NAME + "(ID), " +
                     "GuessLatitude" + " REAL, " +
                     "GuessLongitude" + " REAL, " +
                     "DateTimeStamp" + " REAL);";
@@ -46,8 +46,8 @@ public class PictomapperDBHelper extends SQLiteOpenHelper{
                     "ID" + " TEXT primary key, " +
                     "UserID" + " TEXT, " +
                     "PlayID" + " TEXT, " +
-                    "FOREIGN KEY(UserID) REFERENCES "+USERS_TABLE_NAME+"(ID)"+
-                    "FOREIGN KEY(PlayID) REFERENCES "+PLAYS_TABLE_NAME+"(ID)"+
+                    //"FOREIGN KEY(UserID) REFERENCES "+USERS_TABLE_NAME+"(ID)"+
+                    //"FOREIGN KEY(PlayID) REFERENCES "+PLAYS_TABLE_NAME+"(ID)"+
                     "Score" + " REAL, " +
                     "DateTimeStamp" + " REAL);";
 

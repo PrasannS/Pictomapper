@@ -2,13 +2,19 @@ package com.apps.android.prasannsinghal.pictomapper;
 
 import android.support.v7.app.AppCompatActivity;
 
+import com.apps.android.prasannsinghal.pictomapper.Models.Monument;
+import com.apps.android.prasannsinghal.pictomapper.persistence.PictomapperDAO;
+import com.apps.android.prasannsinghal.pictomapper.persistence.PictomapperDBHelper;
+
 import java.util.ArrayList;
 
 /**
  * Created by rg2017 on 4/14/2018.
  */
 
-public class MONUMENTS extends AppCompatActivity{
+public class MONUMENTS {
+
+
     public static String[] ALL_MONUMENTS = {"Great Wall of China%#%series of fortifications built along the historical border of China%#%40.68%#%117.23%#%https://upload.wikimedia.org/wikipedia/commons/2/23/The_Great_Wall_of_China_at_Jinshanling-edit.jpg%#%The Great Wall of China is a series of fortifications made of stone, brick, tamped earth, wood, and other materials, generally built along an east-to-west line across the historical northern borders of China to protect the Chinese states and empires against the raids and invasions of the various nomadic groups of the Eurasian Steppe. Several walls were being built as early as the 7th century BC; these, later joined together and made bigger and stronger, are collectively referred to as the Great Wall. Especially famous is the wall built in 220–206 BC by Qin Shi Huang, the first Emperor of China. Little of that wall remains. The Great Wall has been rebuilt, maintained, and enhanced over various dynasties; the majority of the existing wall is from the Ming Dynasty (1368–1644).",
             "Statue of Liberty%#%sculpture on Liberty Island in New York Harbor in New York City, New York, United States%#%40.68916667%#%-74.04444444%#%https://upload.wikimedia.org/wikipedia/commons/a/a1/Statue_of_Liberty_7.jpg%#%The Statue of Liberty is a colossal neoclassical sculpture on Liberty Island in New York Harbor in New York City, in the United States. The copper statue, a gift from the people of France to the people of the United States, was designed by French sculptor Frédéric Auguste Bartholdi and built by Gustave Eiffel. The statue was dedicated on October 28, 1886.",
             "Eiffel Tower%#%tower located on the Champ de Mars in Paris, France%#%48.85822222%#%2.2945%#%https://upload.wikimedia.org/wikipedia/commons/8/85/Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg%#%The Eiffel Tower is a wrought iron lattice tower on the Champ de Mars in Paris, France. It is named after the engineer Gustave Eiffel, whose company designed and built the tower.",
