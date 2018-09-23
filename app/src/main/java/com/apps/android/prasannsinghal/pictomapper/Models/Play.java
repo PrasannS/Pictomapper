@@ -4,20 +4,23 @@ import com.apps.android.prasannsinghal.pictomapper.Models.Monument;
 import com.google.android.gms.maps.model.LatLng;
 
 public class Play {
-    private String monumentName;
-    private String monumentDesc;
-    private LatLng monumentLatLng;
-    private LatLng userGuessLatLng;
-    private double score;
-    private String monumentImageURL;
+    public String ID;
+    public String monumentID;
+    public String monumentDesc;
+    public LatLng monumentLatLng;
+    public LatLng userGuessLatLng;
+    //public double score;
+    public String monumentImageURL;
+    public String MonumentName;
+    public int status;
 
     public String getMonumentImageURL() {
         return monumentImageURL;
     }
 
-    public double getScore() {
-        return score;
-    }
+    //public double getScore() {
+   //     return score;
+    //}
 
     public LatLng getMonumentLatLng() {
         return monumentLatLng;
@@ -32,21 +35,21 @@ public class Play {
     }
 
     public String getMonumentName() {
-        return monumentName;
+        return MonumentName;
     }
 
     public Play(){
         monumentLatLng = new LatLng(0.,0.);
-        userGuessLatLng = new LatLng(0.,0.);
     }
 
-    public Play(Monument m){
-        monumentName = m.name;
+    public Play(Monument m, int numentries){
+        ID = ""+numentries;
+        MonumentName = m.name;
+        monumentID = m.ID;
         monumentDesc = m.description;
         monumentLatLng = new LatLng(m.lat,m.lng);
         monumentImageURL = m.imageURL;
-        score = -1.0;
-        userGuessLatLng = new LatLng(0.,0.);
+        status = 0;
     }
 
     public void setGuess(LatLng guessLtLn){

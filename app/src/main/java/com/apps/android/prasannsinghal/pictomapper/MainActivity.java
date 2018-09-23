@@ -2,47 +2,35 @@ package com.apps.android.prasannsinghal.pictomapper;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Point;
-import android.location.Location;
-import android.os.AsyncTask;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.support.v4.app.FragmentManager;
 
 
 import com.apps.android.prasannsinghal.pictomapper.Models.Helper;
 import com.apps.android.prasannsinghal.pictomapper.Models.Monument;
 import com.apps.android.prasannsinghal.pictomapper.Models.Play;
-import com.apps.android.prasannsinghal.pictomapper.Models.Session;
+import com.apps.android.prasannsinghal.pictomapper.Models.Score;
+import com.apps.android.prasannsinghal.pictomapper.Models.User;
 import com.apps.android.prasannsinghal.pictomapper.Utilities.Scoring;
 import com.apps.android.prasannsinghal.pictomapper.persistence.PictomapperDAO;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
 import com.google.android.gms.maps.SupportMapFragment;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Dash;
-import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -55,16 +43,14 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.squareup.picasso.Picasso;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.InputStream;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import static com.apps.android.prasannsinghal.pictomapper.MONUMENTS.ALL_MONUMENTS;
+import static com.apps.android.prasannsinghal.pictomapper.Models.Helper.ALL_MONUMENTS_DB;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback{
@@ -79,11 +65,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean hintactivate2;
     private int hintclicks = 0;
     private PictomapperDAO datasource=null;
+    private Play p;
+    private boolean direction;
 
     private com.apps.android.prasannsinghal.pictomapper.TouchImageView  monumentImage;
     private SupportMapFragment mapFrag;
-
-    private Session userSession;
 
     public void saveInDatabase(){
         Monument[] monuments = Monument.fromCSV(ALL_MONUMENTS);
@@ -123,11 +109,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
-        userSession = new Session();
+
 
         instruct = (TextView) findViewById(R.id.instruct);
         instruct.setText("Guess the location..");
@@ -136,7 +119,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userSession.nextPlay();
+                int ret = datasource.getColCount("PLAYS_TABLE_NAME")-1;
+                datasource.setStatus(ret);
                 Intent intent = getIntent();
                 finish();
                 startActivity(intent);
@@ -146,7 +130,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         left.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userSession.previousPlay();
+                int ret = datasource.getColCount("PLAYS_TABLE_NAME")+1;
+                datasource.setStatus(ret);
                 Intent intent = getIntent();
                 finish();
                 startActivity(intent);
@@ -157,20 +142,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         datasource.open();
 
-        this.saveInDatabase();
+        //this.saveInDatabase();
 
         /*for(Monument m: this.readAllMonuments()){
-            Log.d("MonumentsDebugID",m.toString());
-        }*/
-        Helper.ALL_MONUMENTS_DB = this.readAllMonuments();
+            Log.d("MonumentsDebugID",getColumnSize("MONUMENTS_TABLE_NAME")+"");
+        }       */
+        ALL_MONUMENTS_DB = this.readAllMonuments();
 
 
         onNewPlay();
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+
+
     }
 
     public void onNewPlay(){
+        if(datasource.getCurrentPlay()!=null) {
+            p = new Play(ALL_MONUMENTS_DB.get(new Random().nextInt(ALL_MONUMENTS_DB.size() - 1)), datasource.getColCount("ALL_MONUMENTS_NAME"));
+            direction = true;
+        }
+        else   {
+            p = datasource.getCurrentPlay();
+            direction = false;
+        }
 
-        Play p = this.userSession.getCurrentPlay();
 
         // Load image
         Picasso.with(this)
@@ -193,6 +191,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public void onMapReady(final GoogleMap map) {
+
+        if(direction){
+
 
         map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
@@ -225,10 +226,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
-                                userSession.getCurrentPlay().setGuess(point);
+                                p.setGuess(point);
+                                datasource.addPlay(p);
 
                                 //String msg = "Here's some info: \n"+ALL_MON_MODELS[currentIndex].detailedDescription;
-                                Marker monmark = map.addMarker(new MarkerOptions().position(new LatLng(getlat(), getlng())).title(userSession.getCurrentPlay().getMonumentName()).snippet(userSession.getCurrentPlay().getMonumentDesc()));
+                                Marker monmark = map.addMarker(new MarkerOptions().position(new LatLng(getlat(), getlng())).title(p.getMonumentName()).snippet(p.getMonumentDesc()));
                                 Marker guessmark = map.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                                 Polyline line = map.addPolyline(new PolylineOptions()
                                         .add(new LatLng(getlat(), getlng()), new LatLng(point.latitude,point.longitude))
@@ -250,7 +252,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                 //Toast.makeText(getApplicationContext(),msg,5*Toast.LENGTH_LONG).show();
 
-                                instruct.setText(""+(int)Scoring.getDistanceKm(userSession.getCurrentPlay().getUserGuessLatLng(),userSession.getCurrentPlay().getMonumentLatLng())+" Kms");
+                                instruct.setText(""+(int)Scoring.getDistanceKm(p.getUserGuessLatLng(),p.getMonumentLatLng())+" Kms");
+                                datasource.addScore(new Score(p.ID,getUser().ID,p.ID,(int)Scoring.getDistanceKm(p.getUserGuessLatLng(),p.getMonumentLatLng())));
 
 
                             }
@@ -289,6 +292,37 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
+        }
+        else{
+
+            LatLng point = new LatLng(p.userGuessLatLng.latitude,p.userGuessLatLng.longitude);
+            Marker monmark = map.addMarker(new MarkerOptions().position(new LatLng(getlat(), getlng())).title(p.getMonumentName()).snippet(p.getMonumentDesc()));
+            Marker guessmark = map.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+            Polyline line = map.addPolyline(new PolylineOptions()
+                    .add(new LatLng(getlat(), getlng()), new LatLng(point.latitude,point.longitude))
+                    .width(3)
+                    .color(Color.BLACK));
+
+            List<PatternItem> pattern = Arrays.<PatternItem>asList(
+                    new Gap(5), new Dash(10), new Gap(5));
+            line.setPattern(pattern);
+            //map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng((point.latitude+getlat())/2, (point.longitude+getlng())/2),1));
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            builder.include(monmark.getPosition());
+            builder.include(guessmark.getPosition());
+            LatLngBounds bounds = builder.build();
+            int padding = 45; // offset from edges of the map in pixels
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+            map.animateCamera(cu);
+
+
+            //Toast.makeText(getApplicationContext(),msg,5*Toast.LENGTH_LONG).show();
+
+            instruct.setText(""+(int)Scoring.getDistanceKm(p.getUserGuessLatLng(),p.getMonumentLatLng())+" Kms");
+
+
+
+        }
 
     }
 
@@ -306,12 +340,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public double getlat(){
-        return userSession.getCurrentPlay().getMonumentLatLng().latitude;
+        return p.getMonumentLatLng().latitude;
 
     }
     public double getlng(){
 
-        return userSession.getCurrentPlay().getMonumentLatLng().longitude;
+        return p.getMonumentLatLng().longitude;
     }
 
     public LinearLayout rellayout(){
@@ -319,13 +353,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return rel;
     }
 
+
     public void onHint(){
         switch(hintclicks){
             case 0:{
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
                 builder1.setCancelable(true);
                 builder1.setTitle("HINT "+(hintclicks+1));
-                builder1.setMessage("The name of this place is "+userSession.getCurrentPlay().getMonumentName());
+                builder1.setMessage("The name of this place is "+p.getMonumentName());
                 builder1.setNegativeButton("BACK TO QUESTION", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -359,6 +394,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
         hintclicks++;
+    }
+
+    public User getUser(){
+        return new User("10","Prasann Singhal",5,14);
     }
 
 
@@ -409,5 +448,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
     }
+
 
 }

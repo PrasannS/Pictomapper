@@ -31,23 +31,4 @@ public class Scoring {
         return Radius * c;
     }
 
-    public static double evaluateScore(LatLng guess, LatLng actual){
-
-        double distanceKm = getDistanceKm(guess, actual);
-        double score = 0.;
-
-        if (distanceKm<=35){
-            score = 100.;
-        } else  if (distanceKm<=100){
-            score = 75.;
-        }  else  if (distanceKm<=500){
-            score = 50.;
-        } else  if (distanceKm<=1000){
-            score = 25.;
-        }  else {
-            score = 0.;
-        }
-
-        return score;
-    }
 }
