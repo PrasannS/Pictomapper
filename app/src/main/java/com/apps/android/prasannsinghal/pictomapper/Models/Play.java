@@ -39,7 +39,15 @@ public class Play {
     }
 
     public Play(){
-        monumentLatLng = new LatLng(0.,0.);
+        ID = ""+0;
+        MonumentName = "Something";
+        monumentID = "Something";
+        monumentDesc = "Something";
+        monumentLatLng = new LatLng(0,0);
+        monumentImageURL = "Something";
+        status = 0;
+        userGuessLatLng = new LatLng(0,0);
+
     }
 
     public Play(Monument m, int numentries){
@@ -50,6 +58,7 @@ public class Play {
         monumentLatLng = new LatLng(m.lat,m.lng);
         monumentImageURL = m.imageURL;
         status = 0;
+        userGuessLatLng = new LatLng(0,0);
     }
 
     public void setGuess(LatLng guessLtLn){

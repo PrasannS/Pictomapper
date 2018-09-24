@@ -114,13 +114,13 @@ public class PictomapperDAO {
         values.put("Status",m.status);
         values.put("DateTimeStamp",new Timestamp(date.getTime()).toString());
 
-        long insertID = database.insert(PictomapperDBHelper.PLAYS_TABLE_NAME,null, values);
+        long insertID = database.insert("PLAYS_TABLE_NAME",null, values);
     }
 
     public void setStatus(int i){
         ContentValues values = new ContentValues();
         values.put("Status",i);
-        database.update(PLAYS_TABLE_NAME,values,"_id="+getColCount(PLAYS_TABLE_NAME), null);
+        database.update("PLAYS_TABLE_NAME",values,"_id="+getColCount("PLAYS_TABLE_NAME"), null);
     }
 
     public void addUser(User user){

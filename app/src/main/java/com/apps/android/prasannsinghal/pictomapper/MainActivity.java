@@ -148,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Log.d("MonumentsDebugID",getColumnSize("MONUMENTS_TABLE_NAME")+"");
         }       */
         ALL_MONUMENTS_DB = this.readAllMonuments();
+        datasource.addPlay(new Play());
 
 
         onNewPlay();
