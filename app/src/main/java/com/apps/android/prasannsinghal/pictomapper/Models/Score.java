@@ -14,7 +14,10 @@ public class Score {
     }
 
     public Score(){
-
+        ID = "random"+(int)Math.random()*10;
+        UserID = "0";
+        PlayID = "0";
+        score = 0;
     }
 
     public int calculateScore(int in){

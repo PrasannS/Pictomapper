@@ -10,7 +10,7 @@ import android.util.Log;
 
 public class PictomapperDBHelper extends SQLiteOpenHelper{
     private static final String DATABASE_NAME = "DB_PICTOMAPPER";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     public static final String MONUMENTS_TABLE_NAME = "TBL_MONUMENTS";
     public static final String PLAYS_TABLE_NAME = "TBL_PLAYS";
     public static final String USERS_TABLE_NAME = "TBL_USERS";
@@ -34,9 +34,8 @@ public class PictomapperDBHelper extends SQLiteOpenHelper{
                     "MonumentLongitude" + " REAL, " +
                     "GuessLatitude" + " REAL, " +
                     "GuessLongitude" + " REAL, " +
-                    "DateTimeStamp" + " TEXT, " +
-                    "Status" + " REAL, " +
-                    " FOREIGN KEY (MonumentID) REFERENCES "+MONUMENTS_TABLE_NAME+"(MonumentID));";
+                    "TimeStamp" + " BIGINT, " +
+                    " FOREIGN KEY (MonumentID) REFERENCES "+MONUMENTS_TABLE_NAME+"(ID));";
 
     private static final String USERS_TABLE_CREATE =
             "CREATE TABLE " + USERS_TABLE_NAME + " (" +

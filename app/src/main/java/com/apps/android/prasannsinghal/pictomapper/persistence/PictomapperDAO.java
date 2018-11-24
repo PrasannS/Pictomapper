@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
 import com.apps.android.prasannsinghal.pictomapper.Models.*;
 import com.google.android.gms.maps.model.LatLng;
 import java.sql.Timestamp;
@@ -91,7 +93,7 @@ public class PictomapperDAO {
         values.put("ImgURL",m.imageURL);
         values.put("DetailedDescription",m.detailedDescription);
 
-        long insertID = database.insert(MONUMENTS_TABLE_NAME, null, values);
+        long insertID = database.insert(PictomapperDBHelper.MONUMENTS_TABLE_NAME, null, values);
         /*Cursor cursor = database.query(PictomapperDBHelper.MONUMENTS_TABLE_NAME, allColumns, "ID" + " = " + "\""+ r+"\"", null, null, null, null );
         cursor.moveToFirst();
         Monument newM = cursorToMonument(cursor);
@@ -100,28 +102,29 @@ public class PictomapperDAO {
 
     }
 
-    public void addPlay(Play m){
+    public void addPlay(Play p){
 
         ContentValues values = new ContentValues();
         Date date = new Date();
 
-        values.put("ID",m.ID);
-        values.put("MonumentID",m.monumentID);
-        values.put("MonumentLatitude",m.monumentLatLng.latitude);
-        values.put("MonumentLongitude",m.monumentLatLng.longitude);
-        values.put("GuessLatitude",m.userGuessLatLng.latitude);
-        values.put("GuessLongitude",m.userGuessLatLng.longitude);
-        values.put("Status",m.status);
-        values.put("DateTimeStamp",new Timestamp(date.getTime()).toString());
+        values.put("ID",p.ID);
+        values.put("MonumentID",p.monumentID);
+        values.put("MonumentLatitude",p.monumentLatLng.latitude);
+        values.put("MonumentLongitude",p.monumentLatLng.longitude);
+        values.put("GuessLatitude",p.userGuessLatLng.latitude);
+        values.put("GuessLongitude",p.userGuessLatLng.longitude);
+        values.put("Timestamp",p.timestamp);
+        //values.put("DateTimeStamp",new Timestamp(date.getTime()).toString());
 
-        long insertID = database.insert("PLAYS_TABLE_NAME",null, values);
+        long insertID = database.insert(PictomapperDBHelper.PLAYS_TABLE_NAME,null, values);
+        Log.d("addPlay",insertID+"");
     }
 
-    public void setStatus(int i){
+    /*public void setStatus(int i){
         ContentValues values = new ContentValues();
         values.put("Status",i);
-        database.update("PLAYS_TABLE_NAME",values,"_id="+getColCount("PLAYS_TABLE_NAME"), null);
-    }
+        //database.update(PictomapperDBHelper.PLAYS_TABLE_NAME,values,"_id="+getColCount("PLAYS_TABLE_NAME"), null);
+    }*/
 
     public void addUser(User user){
         ContentValues values = new ContentValues();
@@ -134,6 +137,7 @@ public class PictomapperDAO {
         values.put("DateTimeStamp",new Timestamp(date.getTime()).toString());
 
         long insertID = database.insert(PictomapperDBHelper.USERS_TABLE_NAME,null, values);
+        Log.d("addUser",insertID+"");
 
 
 
@@ -150,7 +154,6 @@ public class PictomapperDAO {
         values.put("DateTimeStamp",new Timestamp(date.getTime()).toString());
 
         long insertID = database.insert(PictomapperDBHelper.SCORES_TABLE_NAME,null, values);
-
 
 
     }
@@ -179,12 +182,18 @@ public class PictomapperDAO {
         return p;
     }
 
-    public Score getScore(String id){
-        Cursor cursor = database.query(PictomapperDBHelper.SCORES_TABLE_NAME, allScoreColumns, "ID" + " = " + "\""+ id +"\"", null, null, null, null);
+    public int getScore(){
+        Cursor cursor = database.query(PictomapperDBHelper.SCORES_TABLE_NAME, allScoreColumns, null, null, null, null, null);
         cursor.moveToFirst();
-        Score p = cursorToScore(cursor);
+        int totalScore = 0;
+        while(cursor.isAfterLast()==false) {
+            Score p = cursorToScore(cursor);
+            cursor.moveToNext();
+            totalScore+=p.score;
+
+        }
         cursor.close();
-        return p;
+        return totalScore;
     }
 
     public ArrayList<Monument> getAllMonuments(){
@@ -204,14 +213,16 @@ public class PictomapperDAO {
     }
 
     private Play cursorToPlay(Cursor cursor){
-        Play m = new Play();
+        Monument mo = new Monument();
+        Play m = new Play(mo);
         m.ID  = cursor.getString(cursor.getColumnIndex("ID"));
         m.monumentImageURL = getMonument(m.ID).imageURL;
         m.monumentDesc = getMonument(m.ID).description;
-        m.status = Integer.parseInt(cursor.getString(cursor.getColumnIndex("Status")));
+        //m.status = Integer.parseInt(cursor.getString(cursor.getColumnIndex("Status")));
         m.monumentID= cursor.getString(cursor.getColumnIndex("MonumentID"));
         m.monumentLatLng = new LatLng(Double.parseDouble(cursor.getString(cursor.getColumnIndex("MonumentLatitude"))),Double.parseDouble(cursor.getString(cursor.getColumnIndex("MonumentLongitude"))));
         m.userGuessLatLng = new LatLng(Double.parseDouble(cursor.getString(cursor.getColumnIndex("GuessLatitude"))),Double.parseDouble(cursor.getString(cursor.getColumnIndex("GuessLongitude"))));
+        m.timestamp = cursor.getLong(cursor.getColumnIndex("Timestamp"));
         return m;
     }
 
@@ -249,11 +260,15 @@ public class PictomapperDAO {
     }
 
     public int getColCount(String name) {
-        long count = DatabaseUtils.queryNumEntries(database, name);
-        return (int)count;
+        Cursor cursor = database.query(name, allColumns,null, null, null, null, null);
+        cursor.moveToLast();
+        int ans = Integer.parseInt(cursor.getString(cursor.getColumnIndex("ID")));
+        return ans;
+        //long count = DatabaseUtils.queryNumEntries(database, name);
+        //return (int)count;
     }
 
-    public Play getCurrentPlay(){
+    /*public Play getCurrentPlay(){
         Play p = null;
         if(getColCount("PLAYS_TABLE_NAME")==0){
             return p;
@@ -267,6 +282,6 @@ public class PictomapperDAO {
             return getPlay(""+id);
         }
         return p;
-    }
+    }*/
 
 }

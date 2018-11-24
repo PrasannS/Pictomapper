@@ -10,4 +10,19 @@ tools:context="com.apps.android.prasannsinghal.pictomapper.MainActivity">
 <item android:id="@+id/action_settings"
     android:title="SETTINGS"
     app:showAsAction="never"/>
+<item android:id="@+id/action_score"
+    android:title=""
+    app:showAsAction="always"/>
+
+<item android:id="@+id/action_hint"
+    android:title="Hint"
+    android:src="@drawable/hint"
+    app:showAsAction="never"/>
+
+    <item android:id="@+id/action_reset"
+        android:title="Reset"
+        android:src="@drawable/hint"
+        app:showAsAction="never"/>
+
+
 </menu>
