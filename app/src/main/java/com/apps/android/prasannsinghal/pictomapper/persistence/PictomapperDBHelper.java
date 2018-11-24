@@ -71,6 +71,7 @@ public class PictomapperDBHelper extends SQLiteOpenHelper{
         db.execSQL(PLAYS_TABLE_CREATE);
         db.execSQL(USERS_TABLE_CREATE);
         db.execSQL(SCORES_TABLE_CREATE);
+        // logic for data loading
     }
 
     @Override

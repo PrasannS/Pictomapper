@@ -3,6 +3,7 @@ package com.apps.android.prasannsinghal.pictomapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -45,11 +46,14 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.squareup.picasso.Picasso;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+
+import me.relex.photodraweeview.PhotoDraweeView;
 
 import static com.apps.android.prasannsinghal.pictomapper.MONUMENTS.ALL_MONUMENTS;
 import static com.apps.android.prasannsinghal.pictomapper.Models.Helper.ALL_MONUMENTS_DB;
@@ -123,10 +127,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         /*for(Monument m: this.readAllMonuments()){
             Log.d("MonumentsDebugID",getColumnSize("MONUMENTS_TABLE_NAME")+"");
-        }       */
+        }*/
         ALL_MONUMENTS_DB = this.readAllMonuments();
-        datasource.addPlay(new Play(new Monument()));
-        datasource.addScore(new Score());
+        /*datasource.addPlay(new Play(new Monument()));
+        datasource.addScore(new Score());*/
 
 
         onNewPlay();
@@ -149,15 +153,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             direction = false;
         }*/
 
-        p = new Play(ALL_MONUMENTS_DB.get(getMonInd()));
+        try {
+            p = new Play(ALL_MONUMENTS_DB.get(getMonInd()));
 
 
         // Load image
         /*Picasso.with(this)
                 .load(p.getMonumentImageURL())
                 .into(monumentImage);*/
-        SimpleDraweeView draweeView = (SimpleDraweeView) findViewById(R.id.image);
-        draweeView.setImageURI(p.getMonumentImageURL());
+            PhotoDraweeView draweeView = (PhotoDraweeView) findViewById(R.id.image);
+        draweeView.setPhotoUri(Uri.parse(p.getMonumentImageURL()));
         draweeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -173,7 +178,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Clear map
         mapclear = (ImageView) findViewById(R.id.clearbutton);
         mapclear.performClick();
-
+        }
+        catch (Exception ex){
+            Toast.makeText(this.getApplicationContext(),ex.getMessage(),Toast.LENGTH_LONG);
+        }
 
     }
 
