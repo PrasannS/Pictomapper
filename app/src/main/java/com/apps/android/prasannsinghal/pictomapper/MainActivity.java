@@ -1,9 +1,13 @@
 package com.apps.android.prasannsinghal.pictomapper;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -60,8 +64,29 @@ import static com.apps.android.prasannsinghal.pictomapper.Models.Helper.ALL_MONU
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback{
+    /**TODO
+     * SEEDING in onCreate for Database
+     * Toast Dialog
+     * Cache image
+     * Fragment implementation, so refresh not necessary
+     * Fix up UI
+     * Floating action button to next
+     * Try-catch block(production ready)
+     * PRODUCTION READY
+     * - remove unnecesary code
+     * - add comments
+     * - add try-catchs
+     * - add test cases
+     * - add logs
+     *      - crash logging
+     *      - firebase??
+ *     - csharp, ios/android
+     * -c++
+    * */
+
 
     public int score = 0;
+    private int ind;
     private ImageView mapclear;
     private ImageView hintbutton;
     private ImageView next;
@@ -75,22 +100,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Play p;
     private boolean guessed = false;
     private Menu mainMenu;
+    public static FragmentManager fragmentManager;
+    private FloatingActionButton fab;
+    private Context context = this.getApplicationContext();
 
     //private com.apps.android.prasannsinghal.pictomapper.TouchImageView  monumentImage;
     //private SupportMapFragment mapFrag;
 
-    public void saveInDatabase(){
-        Monument[] monuments = Monument.fromCSV(ALL_MONUMENTS);
-        for(Monument m:monuments){
-            try{
-                this.datasource.addMonument(m);
-            }
-            catch (Exception ex){
-                Log.e("saveInDatabase",ex.getMessage());
-            }
 
-        }
-    }
 
     public ArrayList<Monument> readAllMonuments(){
        return datasource.getAllMonuments();
@@ -123,6 +140,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         datasource.open();
 
+        fab =(FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onNewPlay();
+            }
+        });
+
         //this.saveInDatabase();
 
         /*for(Monument m: this.readAllMonuments()){
@@ -134,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         onNewPlay();
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -154,7 +180,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }*/
 
         try {
-            p = new Play(ALL_MONUMENTS_DB.get(getMonInd()));
+            ind =getMonInd();
+            p = new Play(ALL_MONUMENTS_DB.get(ind));
 
 
         // Load image
@@ -176,7 +203,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         // Clear map
-        mapclear = (ImageView) findViewById(R.id.clearbutton);
         mapclear.performClick();
         }
         catch (Exception ex){
@@ -233,7 +259,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                 guessed = true;
 
-                                //String msg = "Here's some info: \n"+ALL_MON_MODELS[currentIndex].detailedDescription;
+                                fab.setVisibility(View.VISIBLE);
+
+
+                                String msg = "Here's some info: \n"+ALL_MONUMENTS_DB.get(ind).detailedDescription;
+                                Toast.makeText(context,msg,Toast.LENGTH_LONG);
                                 Marker monmark = map.addMarker(new MarkerOptions().position(new LatLng(getlat(), getlng())).title(p.getMonumentName()).snippet(p.getMonumentDesc()));
                                 Marker guessmark = map.addMarker(new MarkerOptions().position(point).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                                 Polyline line = map.addPolyline(new PolylineOptions()
@@ -288,7 +318,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0),0));
-                //map.clear();
+                if(guessed)
+                map.clear();
             }
         });
 

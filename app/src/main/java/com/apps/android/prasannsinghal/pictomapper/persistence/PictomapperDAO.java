@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static com.apps.android.prasannsinghal.pictomapper.MONUMENTS.ALL_MONUMENTS;
 import static com.apps.android.prasannsinghal.pictomapper.persistence.PictomapperDBHelper.MONUMENTS_TABLE_NAME;
 import static com.apps.android.prasannsinghal.pictomapper.persistence.PictomapperDBHelper.PLAYS_TABLE_NAME;
 
@@ -79,28 +80,7 @@ public class PictomapperDAO {
         dbHelper.close();
     }
 
-    public void addMonument(Monument m){
 
-        //the following code
-
-
-        ContentValues values = new ContentValues();
-        values.put("ID",m.ID);
-        values.put("Description",m.description);
-        values.put("Name",m.name);
-        values.put("Latitude",m.lat);
-        values.put("Longitude",m.lng);
-        values.put("ImgURL",m.imageURL);
-        values.put("DetailedDescription",m.detailedDescription);
-
-        long insertID = database.insert(PictomapperDBHelper.MONUMENTS_TABLE_NAME, null, values);
-        /*Cursor cursor = database.query(PictomapperDBHelper.MONUMENTS_TABLE_NAME, allColumns, "ID" + " = " + "\""+ r+"\"", null, null, null, null );
-        cursor.moveToFirst();
-        Monument newM = cursorToMonument(cursor);
-        cursor.close();*/
-
-
-    }
 
     public void addPlay(Play p){
 
@@ -267,6 +247,8 @@ public class PictomapperDAO {
         //long count = DatabaseUtils.queryNumEntries(database, name);
         //return (int)count;
     }
+
+
 
     /*public Play getCurrentPlay(){
         Play p = null;

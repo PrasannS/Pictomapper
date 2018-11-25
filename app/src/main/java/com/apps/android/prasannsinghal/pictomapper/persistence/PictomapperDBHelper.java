@@ -1,11 +1,16 @@
 package com.apps.android.prasannsinghal.pictomapper.persistence;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.apps.android.prasannsinghal.pictomapper.Models.Monument;
+
+import static com.apps.android.prasannsinghal.pictomapper.MONUMENTS.ALL_MONUMENTS;
 
 
 public class PictomapperDBHelper extends SQLiteOpenHelper{
@@ -15,6 +20,7 @@ public class PictomapperDBHelper extends SQLiteOpenHelper{
     public static final String PLAYS_TABLE_NAME = "TBL_PLAYS";
     public static final String USERS_TABLE_NAME = "TBL_USERS";
     public static final String SCORES_TABLE_NAME ="TBL_SCORES";
+    private SQLiteDatabase database;
 
     private static final String MONUMENTS_TABLE_CREATE =
             "CREATE TABLE " + MONUMENTS_TABLE_NAME + " (" +
@@ -71,6 +77,8 @@ public class PictomapperDBHelper extends SQLiteOpenHelper{
         db.execSQL(PLAYS_TABLE_CREATE);
         db.execSQL(USERS_TABLE_CREATE);
         db.execSQL(SCORES_TABLE_CREATE);
+        database = this.getWritableDatabase();
+        saveInDatabase();
         // logic for data loading
     }
 
@@ -81,6 +89,42 @@ public class PictomapperDBHelper extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + USERS_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + SCORES_TABLE_NAME);
         onCreate(db);
+    }
+
+    public void saveInDatabase(){
+        Monument[] monuments = Monument.fromCSV(ALL_MONUMENTS);
+        for(Monument m:monuments){
+            try{
+                addMonument(m);
+            }
+            catch (Exception ex){
+                Log.e("saveInDatabase",ex.getMessage());
+            }
+
+        }
+    }
+
+    public void addMonument(Monument m){
+
+        //the following code
+
+
+        ContentValues values = new ContentValues();
+        values.put("ID",m.ID);
+        values.put("Description",m.description);
+        values.put("Name",m.name);
+        values.put("Latitude",m.lat);
+        values.put("Longitude",m.lng);
+        values.put("ImgURL",m.imageURL);
+        values.put("DetailedDescription",m.detailedDescription);
+
+        long insertID = database.insert(PictomapperDBHelper.MONUMENTS_TABLE_NAME, null, values);
+        /*Cursor cursor = database.query(PictomapperDBHelper.MONUMENTS_TABLE_NAME, allColumns, "ID" + " = " + "\""+ r+"\"", null, null, null, null );
+        cursor.moveToFirst();
+        Monument newM = cursorToMonument(cursor);
+        cursor.close();*/
+
+
     }
 
 
